@@ -1,0 +1,490 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NutriBox</title>
+<style>
+  :root{
+    --green:#16a34a;
+    --green-dark:#15803d;
+    --green-light:#ecfdf3;
+    --ink:#0f172a;
+    --muted:#64748b;
+    --faint:#94a3b8;
+    --border:#e6e9ee;
+    --bg:#ffffff;
+    --orange:#ea580c; --orange-bg:#fff3e8;
+    --bprotein:#16a34a; --bprotein-bg:#eafbf0;
+    --bfat:#2563eb; --bfat-bg:#eaf1ff;
+    --bcarb:#9333ea; --bcarb-bg:#f6eefe;
+      --radius:14px;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+    color:var(--ink);
+    background:var(--bg);
+  }
+  a{color:inherit; text-decoration:none;}
+
+  /* ---------- HEADER ---------- */
+  header{
+    display:flex;
+    align-items:center;
+    gap:28px;
+    padding:16px 32px;
+    border-bottom:1px solid var(--border);
+    position:sticky; top:0;
+    background:var(--bg);
+    z-index:60;
+  }
+  .logo{display:flex; align-items:center; gap:10px; font-weight:800; font-size:18px; white-space:nowrap;}
+  .logo-mark{
+    width:32px; height:32px; border-radius:9px;
+    background:var(--green); color:#fff;
+    display:flex; align-items:center; justify-content:center;
+    font-size:16px;
+  }
+  .search-wrap{flex:1; max-width:420px; position:relative;}
+  .search-wrap input{
+    width:100%;
+    background:#f3f5f8;
+    border:1px solid transparent;
+    padding:10px 14px 10px 38px;
+    border-radius:9px;
+    font-size:14px;
+    outline:none;
+    color:var(--ink);
+  }
+  .search-wrap input:focus{border-color:var(--green);}
+  .search-wrap input::placeholder{color:var(--faint);}
+  .search-icon{position:absolute; left:13px; top:50%; transform:translateY(-50%); color:var(--faint); font-size:14px;}
+  nav{display:flex; gap:26px; font-size:14.5px; font-weight:600; color:#374151;}
+  nav a:hover{color:var(--green-dark);}
+  .header-right{display:flex; align-items:center; gap:14px; margin-left:auto;}
+  .avatar{
+    width:34px; height:34px; border-radius:50%;
+    background:linear-gradient(135deg,#22c55e,#0891b2);
+    color:#fff; font-size:12.5px; font-weight:700;
+    display:flex; align-items:center; justify-content:center;
+  }
+  #cartBtn{
+    background:var(--green);
+    color:#fff;
+    border:none;
+    padding:10px 18px;
+    border-radius:24px;
+    font-size:14px;
+    font-weight:700;
+    cursor:pointer;
+    display:flex; align-items:center; gap:7px;
+  }
+  #cartBtn:hover{background:var(--green-dark);}
+
+  /* ---------- HERO ---------- */
+  .hero{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:40px;
+    padding:48px 32px 36px;
+    flex-wrap:wrap;
+  }
+  .hero-left{max-width:560px;}
+  .eyebrow{
+    display:flex; align-items:center; gap:12px;
+    color:var(--green-dark);
+    font-size:12.5px; font-weight:800; letter-spacing:1.5px;
+    margin-bottom:18px;
+  }
+  .eyebrow .dash{width:34px; height:3px; background:var(--green); border-radius:2px;}
+  h1.headline{font-size:42px; font-weight:800; line-height:1.18; margin-bottom:16px;}
+  h1.headline .accent{color:var(--green);}
+  .hero-left p{color:var(--muted); font-size:15.5px; line-height:1.6; max-width:480px;}
+  .hero-stats{display:flex; gap:30px;}
+  .stat{text-align:center; padding:0 14px; position:relative;}
+  .stat:not(:last-child)::after{
+    content:""; position:absolute; right:-15px; top:4px; bottom:4px; width:1px; background:var(--border);
+  }
+  .stat .num{font-size:30px; font-weight:800; color:var(--green-dark);}
+  .stat .label{font-size:12.5px; color:var(--muted); margin-top:4px; white-space:nowrap;}
+
+  hr.divider{border:none; border-top:1px solid var(--border); margin:0 32px;}
+
+  /* ---------- FILTER BAR ---------- */
+  .filterbar{
+    display:flex; align-items:center; gap:12px;
+    padding:24px 32px 8px;
+    flex-wrap:wrap;
+  }
+  .pill{
+    border:1.5px solid var(--border);
+    background:#fff;
+    color:#374151;
+    padding:9px 18px;
+    border-radius:24px;
+    font-size:14px;
+    font-weight:700;
+    cursor:pointer;
+  }
+  .pill:hover{border-color:var(--green);}
+  .pill.active{background:var(--green); border-color:var(--green); color:#fff;}
+  .filterbar-right{margin-left:auto; display:flex; align-items:center; gap:16px;}
+  .meal-count{color:var(--faint); font-size:14px; white-space:nowrap;}
+  select#sortSelect{
+    background:#f3f5f8;
+    border:1px solid transparent;
+    padding:9px 14px;
+    border-radius:10px;
+    font-size:14px;
+    font-weight:700;
+    color:var(--ink);
+    cursor:pointer;
+    outline:none;
+  }
+
+  /* ---------- GRID ---------- */
+  main{padding:8px 32px 56px;}
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:26px;
+  }
+  .empty-state{color:var(--faint); text-align:center; padding:70px 0; font-size:15px;}
+
+  .card{
+    background:#fff;
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    overflow:hidden;
+    cursor:pointer;
+    transition:box-shadow .15s ease, transform .15s ease;
+  }
+  .card:hover{transform:translateY(-3px); box-shadow:0 12px 24px rgba(15,23,42,0.08);}
+  .cover-wrap{position:relative; width:100%; aspect-ratio:7/6; background:#f1f3f6; overflow:hidden;}
+  .cover-wrap img{width:100%; height:100%; object-fit:cover; display:block;}
+  .rating-badge{
+    position:absolute; top:12px; right:12px;
+    background:rgba(255,255,255,0.95);
+    padding:5px 10px;
+    border-radius:8px;
+    font-size:13px; font-weight:800;
+    display:flex; align-items:center; gap:4px;
+    box-shadow:0 2px 6px rgba(0,0,0,0.12);
+  }
+  .rating-badge .star{color:#f59e0b;}
+
+  .card-body{padding:16px 18px 18px;}
+  .diet-tags{display:flex; gap:6px; margin-bottom:10px; flex-wrap:wrap;}
+  .diet-tag{
+    font-size:11px; font-weight:800; letter-spacing:.3px;
+    padding:4px 10px; border-radius:7px; text-transform:uppercase;
+  }
+  .tag-highprotein{background:var(--bprotein-bg); color:var(--bprotein);}
+  .tag-lowcarb{background:var(--bfat-bg); color:var(--bfat);}
+  .tag-keto{background:var(--bcarb-bg); color:var(--bcarb);}
+  .tag-vegan{background:#ecfccb; color:#4d7c0f;}
+  .tag-paleo{background:var(--orange-bg); color:var(--orange);}
+
+  .card-title{font-size:17px; font-weight:800; margin-bottom:5px;}
+  .card-meta{color:var(--muted); font-size:13px; margin-bottom:14px;}
+  .macro-row{display:grid; grid-template-columns:repeat(4,1fr); gap:7px;}
+  .macro-chip{
+    text-align:center; padding:7px 4px; border-radius:8px;
+    font-size:13px; font-weight:800;
+  }
+  .macro-chip.cal{background:var(--orange-bg); color:var(--orange);}
+  .macro-chip.protein{background:var(--bprotein-bg); color:var(--bprotein);}
+  .macro-chip.fat{background:var(--bfat-bg); color:var(--bfat);}
+  .macro-chip.carb{background:var(--bcarb-bg); color:var(--bcarb);}
+
+  /* ---------- MODAL ---------- */
+  .modal-overlay{
+    position:fixed; inset:0; background:rgba(15,23,42,0.55);
+    display:none; align-items:center; justify-content:center; padding:24px; z-index:100;
+  }
+  .modal-overlay.open{display:flex;}
+  .modal{
+    background:#fff; border-radius:18px; max-width:880px; width:100%;
+    max-height:88vh; overflow-y:auto; display:flex; position:relative;
+  }
+  .modal-close{
+    position:absolute; top:14px; right:14px;
+    background:rgba(255,255,255,0.9); border:none; color:#0f172a;
+    width:34px; height:34px; border-radius:50%; font-size:18px; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; z-index:5;
+    box-shadow:0 2px 6px rgba(0,0,0,0.15);
+  }
+  .modal-cover{width:320px; flex-shrink:0; aspect-ratio:7/6; background:#f1f3f6;}
+  .modal-cover img{width:100%; height:100%; object-fit:cover; display:block;}
+  .modal-info{padding:30px 32px; flex:1; min-width:0;}
+  .modal-title{font-size:25px; font-weight:800; margin-bottom:6px;}
+  .modal-meta{color:var(--muted); font-size:14px; margin-bottom:6px; display:flex; align-items:center; gap:6px;}
+  .modal-tags{display:flex; gap:6px; margin:14px 0 20px; flex-wrap:wrap;}
+  .modal-stats{display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-bottom:22px;}
+  .mstat{text-align:center; padding:12px 6px; border-radius:10px;}
+  .mstat .v{font-size:19px; font-weight:800;}
+  .mstat .l{font-size:11px; color:var(--muted); margin-top:3px; text-transform:uppercase; letter-spacing:.4px;}
+  .section-label{font-size:11px; letter-spacing:1px; color:var(--faint); text-transform:uppercase; margin-bottom:8px;}
+  .modal-description{color:#374151; font-size:14.5px; line-height:1.65; margin-bottom:24px;}
+  #addToCartBtn{
+    background:var(--green); color:#fff; border:none;
+    padding:12px 22px; border-radius:24px; font-size:14.5px; font-weight:700; cursor:pointer;
+  }
+  #addToCartBtn:hover{background:var(--green-dark);}
+  #addToCartBtn.added{background:#0f172a;}
+
+  @media (max-width:980px){
+    .grid{grid-template-columns:repeat(2,1fr);}
+    nav{display:none;}
+    .hero{flex-direction:column; align-items:flex-start;}
+    .modal{flex-direction:column; max-height:92vh;}
+    .modal-cover{width:100%; aspect-ratio:16/9;}
+  }
+  @media (max-width:600px){
+    header{flex-wrap:wrap; gap:10px;}
+    .search-wrap{order:3; max-width:100%;}
+    h1.headline{font-size:32px;}
+    .hero-stats{gap:16px;}
+    .grid{grid-template-columns:1fr; gap:16px;}
+    main, .hero, .filterbar{padding-left:18px; padding-right:18px;}
+    hr.divider{margin:0 18px;}
+    .macro-row{gap:5px;}
+    .macro-chip{font-size:11.5px; padding:6px 2px;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo"><span class="logo-mark">&#127811;</span>NutriBox</div>
+  <div class="search-wrap">
+    <span class="search-icon">&#128269;</span>
+    <input id="searchInput" type="text" placeholder="Search meals, ingredients...">
+  </div>
+  <nav>
+    <a href="#">Meal Plans</a>
+    <a href="#">Nutrition</a>
+    <a href="#">Blog</a>
+  </nav>
+  <div class="header-right">
+    <div class="avatar">JD</div>
+    <button id="cartBtn">&#128722; Cart</button>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-left">
+    <div class="eyebrow"><span class="dash"></span>FRESH &middot; MACRO-TRACKED &middot; DELIVERED</div>
+    <h1 class="headline">Fuel your body,<br><span class="accent">hit your macros.</span></h1>
+    <p>Chef-prepared high-protein meals delivered to your door. Every macro tracked, every ingredient whole.</p>
+  </div>
+  <div class="hero-stats">
+    <div class="stat"><div class="num">540+</div><div class="label">Whole-food meals</div></div>
+    <div class="stat"><div class="num">99g</div><div class="label">Max protein / meal</div></div>
+    <div class="stat"><div class="num">30m</div><div class="label">Avg delivery time</div></div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<div class="filterbar" id="filterbar">
+  <div class="filterbar-right" style="margin-left:0; gap:12px;" id="pillRow"></div>
+  <div class="filterbar-right">
+    <span class="meal-count" id="mealCount"></span>
+    <select id="sortSelect">
+      <option value="popular">Most Popular</option>
+      <option value="rating">Highest Rated</option>
+      <option value="quick">Quickest</option>
+      <option value="cal-asc">Calories: Low to High</option>
+      <option value="protein-desc">Protein: High to Low</option>
+    </select>
+  </div>
+</div>
+
+<main>
+  <div class="grid" id="grid"></div>
+</main>
+
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <button class="modal-close" id="modalClose">&#10005;</button>
+    <div class="modal-cover"><img id="modalImg" src="" alt=""></div>
+    <div class="modal-info">
+      <div class="modal-title" id="modalTitle"></div>
+      <div class="modal-meta"><span class="rating-badge"><span class="star">&#9733;</span><span id="modalRating"></span></span><span id="modalMeta"></span></div>
+      <div class="modal-tags" id="modalTags"></div>
+      <div class="modal-stats" id="modalStats"></div>
+      <div class="section-label">Description</div>
+      <div class="modal-description" id="modalDescription"></div>
+      <button id="addToCartBtn">Add to Cart</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const PEXELS = id => `https://images.pexels.com/photos/${id}/pexels-photo-${id}.jpeg?auto=compress&cs=tinysrgb&w=900`;
+
+const MEALS = [
+  { id:1, title:"Grilled Chicken Rice Bowl", tags:["High Protein"], rating:4.8, ready:18, reviews:234,
+    cal:485, protein:42, fat:12, carb:48, img:PEXELS(21822134),
+    desc:"Grilled marinated chicken breast over jasmine rice with black beans, pico de gallo and a lime-cilantro drizzle. A protein-forward bowl built for a post-workout refuel." },
+  { id:2, title:"Pan-Seared Salmon Fillet", tags:["Keto","Low Carb"], rating:4.9, ready:22, reviews:189,
+    cal:420, protein:38, fat:22, carb:8, img:PEXELS(2374946),
+    desc:"Wild-caught salmon seared skin-on and finished with a citrus butter sauce, served over sauteed spinach and julienned carrots. Light on carbs, rich in omega-3s." },
+  { id:3, title:"Turkey Quinoa Power Bowl", tags:["High Protein"], rating:4.7, ready:20, reviews:156,
+    cal:510, protein:45, fat:14, carb:52, img:PEXELS(6823336),
+    desc:"Ground turkey breast over fluffy quinoa with roasted bell peppers, cucumber and a tangy yogurt-herb sauce. A balanced bowl with plenty of staying power." },
+  { id:4, title:"Beef & Broccoli Stir Fry", tags:["High Protein","Low Carb"], rating:4.6, ready:25, reviews:142,
+    cal:460, protein:40, fat:18, carb:22, img:PEXELS(2181151),
+    desc:"Tender beef strips and crisp broccoli florets tossed in a savory garlic-ginger sauce, served over a light bed of rice. Quick-cooked for maximum flavor." },
+  { id:5, title:"Vegan Buddha Bowl", tags:["Vegan"], rating:4.5, ready:15, reviews:98,
+    cal:390, protein:16, fat:14, carb:56, img:PEXELS(17597408),
+    desc:"Roasted sweet potato, chickpeas, avocado and shredded kale over brown rice, finished with a tahini-lemon dressing. Fully plant-based and packed with fiber." },
+  { id:6, title:"Avocado Egg Power Plate", tags:["Keto","Paleo"], rating:4.8, ready:12, reviews:211,
+    cal:520, protein:28, fat:40, carb:10, img:PEXELS(4109507),
+    desc:"Two soft-baked eggs nestled beside sliced avocado, cherry tomatoes and crispy turkey bacon. A high-fat, low-carb plate built to keep you full for hours." },
+  { id:7, title:"Shrimp Zucchini Noodles", tags:["Low Carb","Paleo"], rating:4.7, ready:19, reviews:88,
+    cal:350, protein:32, fat:16, carb:14, img:PEXELS(725997),
+    desc:"Garlic shrimp tossed with spiralized zucchini noodles in a light lemon-herb sauce. A pasta-night favorite without the carb load." },
+  { id:8, title:"Lentil & Vegetable Curry", tags:["Vegan"], rating:4.4, ready:24, reviews:76,
+    cal:410, protein:18, fat:10, carb:64, img:PEXELS(18548422),
+    desc:"Red lentils simmered with carrots, spinach and warming curry spices, served over a small portion of basmati rice. Comforting, plant-based and protein-rich." },
+  { id:9, title:"Grass-Fed Steak & Sweet Potato", tags:["Paleo","High Protein"], rating:4.9, ready:28, reviews:167,
+    cal:580, protein:48, fat:24, carb:38, img:PEXELS(769289),
+    desc:"Grass-fed seared steak alongside roasted sweet potato wedges and garlic green beans. Hearty, clean ingredients with nothing processed." },
+  { id:10, title:"Cauliflower Fried Rice with Chicken", tags:["Keto","Low Carb"], rating:4.6, ready:20, reviews:119,
+    cal:380, protein:34, fat:16, carb:18, img:PEXELS(6249394),
+    desc:"Riced cauliflower stir-fried with egg, scallions and grilled chicken in a light soy-sesame glaze. All the flavor of fried rice, a fraction of the carbs." },
+  { id:11, title:"Tofu Veggie Stir Fry", tags:["Vegan","Low Carb"], rating:4.5, ready:17, reviews:64,
+    cal:340, protein:22, fat:14, carb:26, img:PEXELS(2347311),
+    desc:"Pan-seared tofu and a rainbow of crisp vegetables tossed in a ginger-soy glaze, served over a light noodle base. A vegan stir-fry that doesn't skimp on protein." },
+  { id:12, title:"Mediterranean Chickpea Salad", tags:["Vegan"], rating:4.3, ready:10, reviews:53,
+    cal:360, protein:14, fat:16, carb:42, img:PEXELS(6066051),
+    desc:"Chickpeas, cucumber, tomato, red onion and feta tossed in a lemon-oregano vinaigrette. A bright, no-cook salad ready to eat straight from the fridge." }
+];
+
+const FILTERS = ["All Meals","High Protein","Low Carb","Keto","Vegan","Paleo"];
+const state = { search:"", filter:"All Meals", sort:"popular", cartCount:0 };
+
+function tagClass(tag){
+  return {"High Protein":"tag-highprotein","Low Carb":"tag-lowcarb","Keto":"tag-keto","Vegan":"tag-vegan","Paleo":"tag-paleo"}[tag] || "";
+}
+
+const pillRow = document.getElementById('pillRow');
+function buildPills(){
+  pillRow.innerHTML = FILTERS.map(f =>
+    `<button class="pill ${f===state.filter?'active':''}" data-filter="${f}">${f}</button>`
+  ).join('');
+  pillRow.querySelectorAll('.pill').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      state.filter = btn.dataset.filter;
+      buildPills();
+      render();
+    });
+  });
+}
+
+function getFiltered(){
+  let list = MEALS.filter(m=>{
+    const q = state.search.trim().toLowerCase();
+    const matchesSearch = !q || m.title.toLowerCase().includes(q) || m.tags.some(t=>t.toLowerCase().includes(q));
+    const matchesFilter = state.filter === "All Meals" || m.tags.includes(state.filter);
+    return matchesSearch && matchesFilter;
+  });
+  switch(state.sort){
+    case 'popular': list.sort((a,b)=>b.reviews-a.reviews); break;
+    case 'rating': list.sort((a,b)=>b.rating-a.rating); break;
+    case 'quick': list.sort((a,b)=>a.ready-b.ready); break;
+    case 'cal-asc': list.sort((a,b)=>a.cal-b.cal); break;
+    case 'protein-desc': list.sort((a,b)=>b.protein-a.protein); break;
+  }
+  return list;
+}
+
+function cardHTML(m){
+  return `
+    <div class="card" data-id="${m.id}">
+      <div class="cover-wrap">
+        <img src="${m.img}" alt="${m.title}" loading="lazy">
+        <div class="rating-badge"><span class="star">&#9733;</span>${m.rating.toFixed(1)}</div>
+      </div>
+      <div class="card-body">
+        <div class="diet-tags">${m.tags.slice(0,2).map(t=>`<span class="diet-tag ${tagClass(t)}">${t}</span>`).join('')}</div>
+        <div class="card-title">${m.title}</div>
+        <div class="card-meta">Ready in ${m.ready} min &middot; ${m.reviews} reviews</div>
+        <div class="macro-row">
+          <div class="macro-chip cal">${m.cal}</div>
+          <div class="macro-chip protein">${m.protein}g</div>
+          <div class="macro-chip fat">${m.fat}g</div>
+          <div class="macro-chip carb">${m.carb}g</div>
+        </div>
+      </div>
+    </div>`;
+}
+
+const grid = document.getElementById('grid');
+const mealCount = document.getElementById('mealCount');
+function render(){
+  const list = getFiltered();
+  mealCount.textContent = `${list.length} meal${list.length===1?'':'s'}`;
+  grid.innerHTML = list.length ? list.map(cardHTML).join('') : `<div class="empty-state">No meals match your search. Try another filter.</div>`;
+  document.querySelectorAll('.card').forEach(card=>{
+    card.addEventListener('click', ()=>openModal(Number(card.dataset.id)));
+  });
+}
+
+/* ---------- MODAL ---------- */
+const modalOverlay = document.getElementById('modalOverlay');
+let currentMealId = null;
+function openModal(id){
+  const m = MEALS.find(x=>x.id===id);
+  if(!m) return;
+  currentMealId = id;
+  document.getElementById('modalImg').src = m.img;
+  document.getElementById('modalTitle').textContent = m.title;
+  document.getElementById('modalRating').textContent = m.rating.toFixed(1);
+  document.getElementById('modalMeta').textContent = `Ready in ${m.ready} min · ${m.reviews} reviews`;
+  document.getElementById('modalTags').innerHTML = m.tags.map(t=>`<span class="diet-tag ${tagClass(t)}">${t}</span>`).join('');
+  document.getElementById('modalStats').innerHTML = `
+    <div class="mstat" style="background:var(--orange-bg)"><div class="v" style="color:var(--orange)">${m.cal}</div><div class="l">Calories</div></div>
+    <div class="mstat" style="background:var(--bprotein-bg)"><div class="v" style="color:var(--bprotein)">${m.protein}g</div><div class="l">Protein</div></div>
+    <div class="mstat" style="background:var(--bfat-bg)"><div class="v" style="color:var(--bfat)">${m.fat}g</div><div class="l">Fat</div></div>
+    <div class="mstat" style="background:var(--bcarb-bg)"><div class="v" style="color:var(--bcarb)">${m.carb}g</div><div class="l">Carbs</div></div>`;
+  document.getElementById('modalDescription').textContent = m.desc;
+  const btn = document.getElementById('addToCartBtn');
+  btn.textContent = "Add to Cart";
+  btn.classList.remove('added');
+  modalOverlay.classList.add('open');
+}
+document.getElementById('modalClose').addEventListener('click', ()=>modalOverlay.classList.remove('open'));
+modalOverlay.addEventListener('click', e=>{ if(e.target===modalOverlay) modalOverlay.classList.remove('open'); });
+document.addEventListener('keydown', e=>{ if(e.key==='Escape') modalOverlay.classList.remove('open'); });
+
+const cartBtn = document.getElementById('cartBtn');
+document.getElementById('addToCartBtn').addEventListener('click', ()=>{
+  state.cartCount++;
+  cartBtn.innerHTML = `&#128722; Cart (${state.cartCount})`;
+  const btn = document.getElementById('addToCartBtn');
+  btn.textContent = "Added ✓";
+  btn.classList.add('added');
+});
+
+/* ---------- CONTROLS ---------- */
+document.getElementById('searchInput').addEventListener('input', e=>{
+  state.search = e.target.value;
+  render();
+});
+document.getElementById('sortSelect').addEventListener('change', e=>{
+  state.sort = e.target.value;
+  render();
+});
+
+buildPills();
+render();
+</script>
+</body>
+</html>
+  
